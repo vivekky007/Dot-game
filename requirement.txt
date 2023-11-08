@@ -2,3 +2,4 @@ tkinter==8.6.0
 random==3.10.9 
 sys==3.10.9
 os==3.10.9
+pygame==2.5.2

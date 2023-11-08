@@ -1,14 +1,18 @@
+
 import tkinter as tk 
 from tkinter import messagebox
 import random as rn
+import pygame
 import sys
 import os
-# https://stackoverflow.com/questions/31836104/pyinstaller-and-onefile-how-to-include-an-image-in-the-exe-file
+
+
+
 def resource_path(relative_path):
     """ Get absolute path to resource, works for dev and for PyInstaller """
     try:
         # PyInstaller creates a temp folder and stores path in _MEIPASS
-        base_path = sys._MEIPASS2
+        base_path = sys._MEIPASS
     except Exception:
         base_path = os.path.abspath(".")
 
@@ -41,7 +45,7 @@ size=20
 turn = 0
 color = None
 coloro = None
-awin = False
+pygame.mixer.init()
 #*******************************************************************************************************************************
 #*******************************************************************************************************************************
 
@@ -114,7 +118,7 @@ def player1(x1,y1,x2,y2,canvas,color):
 #*******************************************************************************************************************************
 
 def win(dd,canvas):
-    global c,c2,uv1,uv2,dv1,dv2,pr1,pr2,points,awin
+    global c,c2,uv1,uv2,dv1,dv2,pr1,pr2,points
     X = (dd[0][0]+dd[0][1])/2
     Y = (dd[1][0]+dd[1][1])/2
     if dd[1][0] == dd[1][1] and line>=3:
@@ -137,21 +141,21 @@ def win(dd,canvas):
             canvas.create_oval(X-thresh,Y-thresh,X+thresh,Y+thresh,fill=coloro)                                                                
             Y-=20
             canvas.create_oval(X-thresh,Y-thresh,X+thresh,Y+thresh,fill=coloro)
-            points = 2  
-            awin = True      
+        
+            points = 2        
         elif (c in xy_cor_list or crev in xy_cor_list) and (dv1 in xy_cor_list or dv1rev in xy_cor_list) and (dv2 in xy_cor_list or dv2rev in xy_cor_list):
             Y+=10
             canvas.create_oval(X-thresh,Y-thresh,X+thresh,Y+thresh,fill=coloro)
             points = 1
-            awin = True 
         elif (c2 in xy_cor_list or c2rev in xy_cor_list) and (uv1 in xy_cor_list or uv1rev in xy_cor_list) and (uv2 in xy_cor_list or uv2rev in xy_cor_list):
             Y-=10
             canvas.create_oval(X-thresh,Y-thresh,X+thresh,Y+thresh,fill=coloro)
             points = 1
-            awin = True 
+
+
         else:
             points = 0
-            awin = False
+            print("bhaishab")
 
     
     elif dd[0][0] == dd[0][1] and line>=3:
@@ -174,21 +178,19 @@ def win(dd,canvas):
             X-=20
             canvas.create_oval(X-thresh,Y-thresh,X+thresh,Y+thresh,fill=coloro)
             
-            points = 2
-            awin = True   
+            points = 2  
         elif (c in xy_cor_list or crev in xy_cor_list) and (dv1 in xy_cor_list or dv1rev in xy_cor_list) and (dv2 in xy_cor_list or dv2rev in xy_cor_list):
             X+=10
             canvas.create_oval(X-thresh,Y-thresh,X+thresh,Y+thresh,fill=coloro)
             points = 1
-            awin = True 
         elif (c2 in xy_cor_list or c2rev in xy_cor_list) and (uv1 in xy_cor_list or uv1rev in xy_cor_list) and (uv2 in xy_cor_list or uv2rev in xy_cor_list):
             X-=10
             canvas.create_oval(X-thresh,Y-thresh,X+thresh,Y+thresh,fill=coloro)
             points = 1
-            awin = True 
+          
         else:
             points = 0
-            awin = False
+            print(" elif bhaishab")
     else:   
         print("ELSE BLOCK")
 
@@ -206,8 +208,12 @@ pred = 0
 pgreen = 0
 
 def resize():
-    global x, y, bor, fsize, mar, text, ymar,xt,yt,fontl
+    global x, y, bor, fsize, mar, text, ymar, fontl,xt,yt
+
+    
     size = b1.get()
+
+
     if size == "Small":
         x = 300
         y = 300
@@ -251,17 +257,15 @@ resize()
 def evaluate():
     global fsize
     if pgreen>pred:
-        text1 = "player1 wins!!"
-
-        
+        text1 = "player1 wins!!" 
     elif pgreen<pred:
         text1 = "player2 wins!!"
-
     else:
         text1 = "match tied"
+    win_lab = tk.Label(main, text=text1, font=("Helvetica", fontl))
+    win_lab.place(x=int(xt), y=int(yt))
 
-    win_lab = tk.Label(main,text = text1,font=("Helvetica", fontl))
-    win_lab.place(x = xt,y = yt)
+
     def desm():
         main.destroy()
     main.after(2000,desm)
@@ -273,6 +277,8 @@ def show():
         p2.place(x=10, y=(y - bor) + 10+mar)  
         exit_button = tk.Button(main,text = "Exit",command=evaluate)
         exit_button.place(x = x-100,y = (y-ymar))   
+
+
 
     
 
@@ -287,8 +293,9 @@ def start():
     canvas.pack()
     show()
     def on_canvas_click(event):
-        global points_recorded,thresh,turn,size,xy_cor_list,color,coloro,line,pred,pgreen,points,awin
+        global points_recorded,thresh,turn,size,xy_cor_list,color,coloro,line,pred,pgreen,points
         print("canvas",turn)
+        
     
         points = 0
         x1 = event.x
@@ -307,6 +314,8 @@ def start():
                 ycor.append(b)
                 points_recorded += 1
                 canvas.create_oval(a-thresh,b-thresh,a+thresh,b+thresh,fill=coloro)
+                pygame.mixer.Sound('/home/vinay/Desktop/vivek/Dot-game/pop-39222.mp3').play()
+                
             elif points_recorded==1:
                 color = "green"
                 a,b=check_point2(xcor[0],ycor[0],x1,y1,thresh,size)
@@ -324,7 +333,9 @@ def start():
 
                 for i in range(len(xy_cor_list)):
                     if (dd == xy_cor_list[i])  or (rev == xy_cor_list[i]):
+                        pygame.mixer.Sound('/home/vinay/Desktop/vivek/Dot-game/buzzer-or-wrong-answer-20582.mp3').play()
                         messagebox.showerror("Error","can't choose already selected points")
+                        
                         if (dd in corp2) or (rev in corp2):
                             points_recorded = 1
                             color = "red"
@@ -332,6 +343,8 @@ def start():
                             aa = dd[0][0]
                             bb = dd[1][0]
                             canvas.create_oval(aa-thresh,bb-thresh,aa+thresh,bb+thresh,fill="red")
+                            pygame.mixer.Sound('/home/vinay/Desktop/vivek/Dot-game/pop-39222.mp3').play()
+
                             
                             
                             
@@ -359,18 +372,17 @@ def start():
                 if found_match == True:
                     points_recorded += 0
                     canvas.create_oval(a-thresh,b-thresh,a+thresh,b+thresh,fill=coloro)
+                    pygame.mixer.Sound('/home/vinay/Desktop/vivek/Dot-game/pop-39222.mp3').play()
+ 
                     player2(xcor[0],ycor[0],xcor[1],ycor[1],canvas,color)
                     turn += 0
                 else:
                     points_recorded += 1
                     canvas.create_oval(a-thresh,b-thresh,a+thresh,b+thresh,fill=coloro)
-                    player2(xcor[0],ycor[0],xcor[1],ycor[1],canvas,color)
-                    if(awin == True):
-                        turn = turn + 0
-                    else:
-                        turn = turn + 1
-            
+                    pygame.mixer.Sound('/home/vinay/Desktop/vivek/Dot-game/pop-39222.mp3').play()
 
+                    player2(xcor[0],ycor[0],xcor[1],ycor[1],canvas,color)
+                    turn = turn + 1
                 
         elif turn == 1:
 
@@ -383,6 +395,8 @@ def start():
                 ycor.append(b)
                 points_recorded += 1
                 canvas.create_oval(a-thresh,b-thresh,a+thresh,b+thresh,fill=coloro)
+                pygame.mixer.Sound('/home/vinay/Desktop/vivek/Dot-game/pop-39222.mp3').play()
+
             elif points_recorded==1:
                 color = "red"
                 a,b=check_point2(xcor[0],ycor[0],x1,y1,thresh,size)
@@ -399,13 +413,17 @@ def start():
 
                 for i in range(len(xy_cor_list)):
                     if (dd == xy_cor_list[i]) or (rev == xy_cor_list[i]):
+                        pygame.mixer.Sound('/home/vinay/Desktop/vivek/Dot-game/buzzer-or-wrong-answer-20582.mp3').play()
                         messagebox.showerror("Error","Can't choose already selected points")
+                       
                         if (dd in corp1) or (rev in corp1):
                             color = "green"
                             coloro = "green"
                             aa = dd[0][0]
                             bb = dd[1][0]
                             canvas.create_oval(aa-thresh,bb-thresh,aa+thresh,bb+thresh,fill="green")
+                            pygame.mixer.Sound('/home/vinay/Desktop/vivek/Dot-game/pop-39222.mp3').play()
+                        
                             
                         else:
                             pass
@@ -424,16 +442,18 @@ def start():
                 if found_match == True:
                     points_recorded +=0
                     canvas.create_oval(a-thresh,b-thresh,a+thresh,b+thresh,fill=coloro)
+                    pygame.mixer.Sound('/home/vinay/Desktop/vivek/Dot-game/pop-39222.mp3').play()
+        
                     player1(xcor[0],ycor[0],xcor[1],ycor[1],canvas,color)
                     turn+=0
                 else:
                     points_recorded += 1
                     canvas.create_oval(a-thresh,b-thresh,a+thresh,b+thresh,fill=coloro)
+                    pygame.mixer.Sound('/home/vinay/Desktop/vivek/Dot-game/pop-39222.mp3').play()
+                    
                     player1(xcor[0],ycor[0],xcor[1],ycor[1],canvas,color)
-                    if(awin == True):
-                        turn = turn + 0
-                    else:
-                        turn = turn - 1
+
+                    turn -=1
 
 
 

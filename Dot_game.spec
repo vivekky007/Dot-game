@@ -18,6 +18,8 @@ pyz = PYZ(a.pure)
 exe = EXE(
     pyz,
     a.scripts,
+    a.binaries,
+    a.datas,
     [],
     exclude_binaries=True,
     name='Dot_game',
@@ -31,7 +33,7 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-)
+    )
 coll = COLLECT(
     exe,
     a.binaries,
@@ -39,5 +41,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='Dot_game',
+name='Dot_game',
 )
